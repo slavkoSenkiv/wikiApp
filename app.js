@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const Article = require('./Article');
 const ejs = require('ejs');
 const app = express();
 app.use(express.urlencoded({extended: true}));
@@ -16,12 +17,6 @@ mongoose.connect(url, {
 .then(() => console.log('mongoose connection to local db is successful'))
 .catch((error) => console.error('Error connecting to local db:', error));
 
-const articleSchema = new mongoose.Schema({
-    title: String,
-    content: String
-});
-
-const Article = mongoose.model('Article', articleSchema);
 
 app.get('/articles', async (req, res) => {
   try {
@@ -34,10 +29,9 @@ app.get('/articles', async (req, res) => {
   }
 });
 
-
-/* const user = new User({ name: 'Slav1', age: 29 });
-user.save()
-  .then(() => console.log('mongoose user saved'))
+/* const article = new Article({ title: 'title 3', content: 'contnet 3' });
+article.save()
+  .then(() => console.log('mongoose article saved'))
   .catch((error) => console.error(error))
   .finally(() => mongoose.disconnect()); */
 

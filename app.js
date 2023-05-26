@@ -7,11 +7,14 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
-const url = "mongodb+srv://mongo-admin:pass@cluster0.b0wdnst.mongodb.net/wikiDB";
+//const url = "mongodb+srv://mongo-admin:pass@cluster0.b0wdnst.mongodb.net/wikiDB"; //atlas db url
+const url = "mongodb://127.0.0.1:27017/wikiDB"; //local db url
 mongoose.connect(url, {
   useNewUrlParser: true,
-  useUnifiedTopology: true})
-  .then(console.log('mongoose connection to db is successfull'));
+  useUnifiedTopology: true
+})
+.then(() => console.log('mongoose connection to local db is successful'))
+.catch((error) => console.error('Error connecting to local db:', error));
 
 const articleSchema = new mongoose.Schema({
     title: String,
@@ -19,6 +22,18 @@ const articleSchema = new mongoose.Schema({
 });
 
 const Article = mongoose.model('Article', articleSchema);
+
+app.get('/articles', async (req, res) => {
+  try {
+    const articles = await Article.find().exec();
+    console.log(articles);
+    res.send(articles); // Optionally, you can send the articles as a response to the client
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 /* const user = new User({ name: 'Slav1', age: 29 });
 user.save()

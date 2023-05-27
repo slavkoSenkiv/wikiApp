@@ -29,12 +29,21 @@ app.get('/articles', async (req, res) => {
   }
 });
 
-/* const article = new Article({ title: 'title 3', content: 'contnet 3' });
-article.save()
-  .then(() => console.log('mongoose article saved'))
-  .catch((error) => console.error(error))
-  .finally(() => mongoose.disconnect()); */
-
-  app.listen(3000, ()=>{
-    console.log('server is up and listening to port 3000');
+app.post('/articles', (req, res)=>{
+  const article = new Article({ 
+    title: req.body.title, 
+    content: req.body.content
   });
+
+  article.save()
+  .then(() =>{
+    console.log('article saved');
+    res.send('Successfully saved an item');
+  })
+  .catch((error) => console.error(error));
+});
+
+
+app.listen(3000, ()=>{
+  console.log('server is up and listening to port 3000');
+});

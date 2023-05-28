@@ -18,17 +18,25 @@ mongoose.connect(url, {
 .catch((error) => console.error('Error connecting to local db:', error));
 
 
+const handlePromise = (promise, successMessage, res, logSuccess = true) => {
+  promise
+    .then((result) => {
+      if (logSuccess) {
+        console.log(successMessage);
+      }
+      res.send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    });
+};
+
+
 app.route('/articles')
 
   .get(async (req, res) => {
-    try {
-      const articles = await Article.find().exec();
-      console.log(articles);
-      res.send(articles);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
-    }
+    handlePromise(Article.find().exec(), 'Articles fetched', res);
   })
   
   .post((req, res)=>{
@@ -36,22 +44,11 @@ app.route('/articles')
       title: req.body.title, 
       content: req.body.content
     });
-  
-    article.save()
-    .then(() =>{
-      console.log('article saved');
-      res.send('Successfully saved an item');
-    })
-    .catch((error) => console.error(error));
+    handlePromise(article.save(), 'Article saved', res);
   })
   
   .delete((req, res)=>{
-    Article.deleteMany()
-    .then(()=>{
-      console.log('articles deleted');
-      res.send('Successfully deleted all items');
-    })
-    .catch((error) => console.error(error));
+    handlePromise(Article.deleteMany(), 'Articles deleted', res);
   })
 
 

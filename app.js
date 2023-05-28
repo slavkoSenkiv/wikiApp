@@ -18,7 +18,44 @@ mongoose.connect(url, {
 .catch((error) => console.error('Error connecting to local db:', error));
 
 
-app.get('/articles', async (req, res) => {
+app.route('/articles')
+
+  .get(async (req, res) => {
+    try {
+      const articles = await Article.find().exec();
+      console.log(articles);
+      res.send(articles);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+  })
+  
+  .post((req, res)=>{
+    const article = new Article({ 
+      title: req.body.title, 
+      content: req.body.content
+    });
+  
+    article.save()
+    .then(() =>{
+      console.log('article saved');
+      res.send('Successfully saved an item');
+    })
+    .catch((error) => console.error(error));
+  })
+  
+  .delete((req, res)=>{
+    Article.deleteMany()
+    .then(()=>{
+      console.log('articles deleted');
+      res.send('Successfully deleted all items');
+    })
+    .catch((error) => console.error(error));
+  })
+
+
+/* app.get('/articles', async (req, res) => {
   try {
     const articles = await Article.find().exec();
     console.log(articles);
@@ -50,7 +87,7 @@ app.delete('/articles', (req, res)=>{
     res.send('Successfully deleted all items');
   })
   .catch((error) => console.error(error));
-});
+}); */
 
 app.listen(3000, ()=>{
   console.log('server is up and listening to port 3000');

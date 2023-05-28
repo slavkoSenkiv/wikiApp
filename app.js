@@ -1,3 +1,4 @@
+// requirements
 const express = require('express');
 const mongoose = require('mongoose');
 const Article = require('./Article');
@@ -8,6 +9,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
+//mongoose boilerplate
 //const url = "mongodb+srv://mongo-admin:pass@cluster0.b0wdnst.mongodb.net/wikiDB"; //atlas db url
 const url = "mongodb://127.0.0.1:27017/wikiDB"; //local db url
 mongoose.connect(url, {
@@ -18,12 +20,10 @@ mongoose.connect(url, {
 .catch((error) => console.error('Error connecting to local db:', error));
 
 
-const handlePromise = (promise, successMessage, res, logSuccess = true) => {
+function handlePromise (promise, successMessage, res) {
   promise
     .then((result) => {
-      if (logSuccess) {
-        console.log(successMessage);
-      }
+      console.log(successMessage);
       res.send(result);
     })
     .catch((error) => {
@@ -51,6 +51,22 @@ app.route('/articles')
     handlePromise(Article.deleteMany(), 'Articles deleted', res);
   })
 
+app.route('/articles/:articleTitle')
+
+  .get((req, res) =>{
+    let articleTitle = req.params.articleTitle; 
+    handlePromise(Article.findOne({title: articleTitle}).exec(), `Article "${articleTitle}" was found`, res);
+  });
+
+
+/*   .post((req, res) =>{
+
+  })
+
+  .delete((req, res) =>{
+
+  })
+ */
 
 app.listen(3000, ()=>{
   console.log('server is up and listening to port 3000');

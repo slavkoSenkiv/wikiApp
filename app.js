@@ -55,40 +55,6 @@ app.route('/articles')
   })
 
 
-/* app.get('/articles', async (req, res) => {
-  try {
-    const articles = await Article.find().exec();
-    console.log(articles);
-    res.send(articles); // Optionally, you can send the articles as a response to the client
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-app.post('/articles', (req, res)=>{
-  const article = new Article({ 
-    title: req.body.title, 
-    content: req.body.content
-  });
-
-  article.save()
-  .then(() =>{
-    console.log('article saved');
-    res.send('Successfully saved an item');
-  })
-  .catch((error) => console.error(error));
-});
-
-app.delete('/articles', (req, res)=>{
-  Article.deleteMany()
-  .then(()=>{
-    console.log('articles deleted');
-    res.send('Successfully deleted all items');
-  })
-  .catch((error) => console.error(error));
-}); */
-
 app.listen(3000, ()=>{
   console.log('server is up and listening to port 3000');
 });

@@ -43,6 +43,14 @@ app.post('/articles', (req, res)=>{
   .catch((error) => console.error(error));
 });
 
+app.delete('/articles', (req, res)=>{
+  Article.deleteMany()
+  .then(()=>{
+    console.log('articles deleted');
+    res.send('Successfully deleted all items');
+  })
+  .catch((error) => console.error(error));
+});
 
 app.listen(3000, ()=>{
   console.log('server is up and listening to port 3000');

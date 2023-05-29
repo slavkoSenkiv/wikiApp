@@ -24,8 +24,9 @@ function handlePromise (promise, successMessage, res) {
   promise
     .then((result) => {
       console.log(successMessage);
+      console.log(result);
       res.send(result);
-    })
+     })
     .catch((error) => {
       console.error(error);
       res.status(500).send('Internal Server Error');
@@ -51,22 +52,39 @@ app.route('/articles')
     handlePromise(Article.deleteMany(), 'Articles deleted', res);
   })
 
+
 app.route('/articles/:articleTitle')
 
   .get((req, res) =>{
     let articleTitle = req.params.articleTitle; 
-    handlePromise(Article.findOne({title: articleTitle}).exec(), `Article "${articleTitle}" was found`, res);
+    handlePromise(Article.findOne({title: articleTitle}).exec(), `Search "${articleTitle}" article: \n`, res);
+  })
+
+  .put((req, res)=>{
+    let articleTitle = req.params.articleTitle;
+    let newArticleTitle = req.body.title;
+    let newArticleContent = req.body.content;
+
+    Article.findOneAndUpdate(
+      {title: articleTitle},
+      {title: newArticleTitle,
+      content: newArticleContent},
+      {overwrite: true,
+      new: true})
+
+    .then((result) => {
+      console.log('Article succesfully updated');
+      console.log(result);
+      res.send(result);
+      })
+    
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    });
+
   });
 
-
-/*   .post((req, res) =>{
-
-  })
-
-  .delete((req, res) =>{
-
-  })
- */
 
 app.listen(3000, ()=>{
   console.log('server is up and listening to port 3000');

@@ -60,6 +60,7 @@ app.route('/articles/:articleTitle')
     handlePromise(Article.findOne({title: articleTitle}).exec(), `Search "${articleTitle}" article: \n`, res);
   })
 
+
   .put((req, res)=>{
     let articleTitle = req.params.articleTitle;
     let newArticleTitle = req.body.title;
@@ -78,17 +79,16 @@ app.route('/articles/:articleTitle')
       res.send(result);
       })
     
-    .catch((error) => {
+    .catch((error) => {mongof
       console.error(error);
       res.status(500).send('Internal Server Error');
     });
 
   })
 
+
   .patch((req, res)=>{
     let articleTitle = req.params.articleTitle;
-    console.log('req.body', req.body);
-
     Article.findOneAndUpdate(
       {title: articleTitle},
       {$set: req.body},
@@ -104,9 +104,28 @@ app.route('/articles/:articleTitle')
     .catch((error) => {
       console.error(error);
       res.status(500).send('Internal Server Error');
-    });
-  });
+    })
 
+
+  })
+
+  .delete((req, res)=>{
+    let articleTitle = req.params.articleTitle;
+    Article.findOneAndDelete(
+      {title: articleTitle}
+    )
+
+    .then((result) => {
+      console.log(`Article "${articleTitle}" was deleted`);
+      console.log(result);
+      res.send(result);
+      })
+    
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    })
+  });
 
 app.listen(3000, ()=>{
   console.log('server is up and listening to port 3000');

@@ -83,6 +83,28 @@ app.route('/articles/:articleTitle')
       res.status(500).send('Internal Server Error');
     });
 
+  })
+
+  .patch((req, res)=>{
+    let articleTitle = req.params.articleTitle;
+    console.log('req.body', req.body);
+
+    Article.findOneAndUpdate(
+      {title: articleTitle},
+      {$set: req.body},
+      {new: true}
+    )
+
+    .then((result) => {
+      console.log('Part of the article succesfully updated');
+      console.log(result);
+      res.send(result);
+      })
+    
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    });
   });
 
 
